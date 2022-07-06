@@ -1,0 +1,110 @@
+#include <SoftwareSerial.h> 
+
+SoftwareSerial BT(10, 11);
+char val;
+const int In1 = 4;
+const int In2 = 5;
+const int In3 = 6;
+const int In4 = 7;
+int duration;
+String valStr;
+void setup() {
+  Serial.begin(9600);
+  Serial.println("BT is ready!");
+  BT.begin(9600);
+  pinMode(In1,OUTPUT);
+  pinMode(In2,OUTPUT);
+  pinMode(In3,OUTPUT);
+  pinMode(In4,OUTPUT);
+
+}
+void loop() {
+  if (BT.available()) {
+    val = BT.read();
+    duration = 0;
+      switch(val){
+      case '0':
+        mback();
+      break;
+      case '1':
+        mfront();
+      break;
+      case '2':
+        mright();
+      break;
+      case '3':
+        mleft();
+      break;
+      default:
+        mstop();
+      }
+    }
+    else
+    {
+      valStr = val;
+      if(valStr.toInt() <4)
+      {
+        duration++;
+        if(duration > 100)
+        {
+          mstop();
+        }
+      }else{
+        duration = 0;
+        switch(val){
+        case '4':
+          mback();
+        break;
+        case '5':
+          mfront();
+        break;
+        case '6':
+          mright();
+        break;
+        case '7':
+          mleft();
+        break;
+        default:
+          mstop();
+        }
+      }
+    }
+      Serial.println(duration);
+}
+
+void mstop(){
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, LOW);
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, LOW);
+  Serial.println(val);
+}  
+
+void mfront(){
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  digitalWrite(In3, HIGH);
+  digitalWrite(In4, LOW);
+  Serial.println("front");
+}
+void mback(){
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, HIGH);
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, HIGH);
+  Serial.println("back");
+}
+void mright(){
+  digitalWrite(In1, HIGH);
+  digitalWrite(In2, LOW);
+  digitalWrite(In3, LOW);
+  digitalWrite(In4, LOW);
+  Serial.println("right");
+}
+void mleft(){
+  digitalWrite(In1, LOW);
+  digitalWrite(In2, LOW);
+  digitalWrite(In3, HIGH);
+  digitalWrite(In4, LOW);
+  Serial.println("left");
+}
